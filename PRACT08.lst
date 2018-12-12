@@ -1,0 +1,266 @@
+alu0101037653@cc2327:~$ ssh -p 2200 alu0101037653@exthost2.etsii.ull.es
+alu0101037653@exthost2.etsii.ull.es's password: 
+^C
+alu0101037653@cc2327:~$ ssh -p 2201 alu0101037653@exthost2.etsii.ull.es
+The authenticity of host '[exthost2.etsii.ull.es]:2201 ([10.209.32.241]:2201)' can't be established.
+ECDSA key fingerprint is SHA256:DxaI2HMcBvdTyAwFnePfVzpKJqHWo7siFk4/Dmp2tOI.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '[exthost2.etsii.ull.es]:2201,[10.209.32.241]:2201' (ECDSA) to the list of known hosts.
+alu0101037653@exthost2.etsii.ull.es's password: 
+Welcome to Ubuntu 16.04.3 LTS (GNU/Linux 4.4.0-134-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+Last login: Wed Nov 28 13:41:12 2018 from 10.209.32.76
+alu0101037653@280a17b13847:~$ sqlplus2 administrador
+
+SQL*Plus: Release 12.2.0.1.0 Production on Wed Dec 12 13:09:21 2018
+
+Copyright (c) 1982, 2016, Oracle.  All rights reserved.
+
+Enter password: 
+Last Successful login time: Wed Dec 12 2018 13:09:13 +00:00
+
+Connected to:
+Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
+
+SQL> GRANT CREATE SYNONYM, CREATE VIEW
+  2  TO alu0101037653;
+
+Grant succeeded.
+
+SQL> exit
+Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
+alu0101037653@280a17b13847:~$ sqlplus
+
+SQL*Plus: Release 12.2.0.1.0 Production on Wed Dec 12 13:11:37 2018
+
+Copyright (c) 1982, 2016, Oracle.  All rights reserved.
+
+Enter password: 
+Last Successful login time: Sun Dec 09 2018 21:47:27 +00:00
+
+Connected to:
+Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
+
+SQL> SPOOL PRACT08
+SQL> DESCRIBE USER-CONSTRAINTS;
+SP2-0565: Illegal identifier.
+SQL> DESCRIBE USER_CONSTRAINTS;
+ Name					   Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ OWNER						    VARCHAR2(128)
+ CONSTRAINT_NAME				    VARCHAR2(128)
+ CONSTRAINT_TYPE				    VARCHAR2(1)
+ TABLE_NAME					    VARCHAR2(128)
+ SEARCH_CONDITION				    LONG
+ SEARCH_CONDITION_VC				    VARCHAR2(4000)
+ R_OWNER					    VARCHAR2(128)
+ R_CONSTRAINT_NAME				    VARCHAR2(128)
+ DELETE_RULE					    VARCHAR2(9)
+ STATUS 					    VARCHAR2(8)
+ DEFERRABLE					    VARCHAR2(14)
+ DEFERRED					    VARCHAR2(9)
+ VALIDATED					    VARCHAR2(13)
+ GENERATED					    VARCHAR2(14)
+ BAD						    VARCHAR2(3)
+ RELY						    VARCHAR2(4)
+ LAST_CHANGE					    DATE
+ INDEX_OWNER					    VARCHAR2(128)
+ INDEX_NAME					    VARCHAR2(128)
+ INVALID					    VARCHAR2(7)
+ VIEW_RELATED					    VARCHAR2(14)
+ ORIGIN_CON_ID					    NUMBER
+
+SQL> SELECT TABLE_NAME, CONSTRAINT_NAME
+  2  FROM  USER-CONSTRAINTS;
+FROM  USER-CONSTRAINTS
+      *
+ERROR at line 2:
+ORA-00903: invalid table name
+
+
+SQL> SELECT TABLE_NAME, CONSTRAINT_NAME
+  2  FROM  USER_CONSTRAINTS;
+
+TABLE_NAME
+--------------------------------------------------------------------------------
+CONSTRAINT_NAME
+--------------------------------------------------------------------------------
+PROFESOR
+SYS_C0072230
+
+ASIGNATURA
+SYS_C0072318
+
+PLAN_DOCENTE
+SYS_C0072354
+
+
+TABLE_NAME
+--------------------------------------------------------------------------------
+CONSTRAINT_NAME
+--------------------------------------------------------------------------------
+AREA
+SYS_C0072200
+
+PLAN_DOCENTE
+SYS_C0072353
+
+DEPARTAMENTO
+SYS_C0072138
+
+
+TABLE_NAME
+--------------------------------------------------------------------------------
+CONSTRAINT_NAME
+--------------------------------------------------------------------------------
+AREA
+SYS_C0072199
+
+PROFESOR
+SYS_C0072229
+
+ASIGNATURA
+SYS_C0072314
+
+
+TABLE_NAME
+--------------------------------------------------------------------------------
+CONSTRAINT_NAME
+--------------------------------------------------------------------------------
+ASIGNATURA
+SYS_C0072315
+
+ASIGNATURA
+SYS_C0072316
+
+ASIGNATURA
+SYS_C0072317
+
+
+TABLE_NAME
+--------------------------------------------------------------------------------
+CONSTRAINT_NAME
+--------------------------------------------------------------------------------
+PLAN_DOCENTE
+SYS_C0072351
+
+PLAN_DOCENTE
+SYS_C0072352
+
+
+14 rows selected.
+
+SQL> SELECT *
+  2  FROM PROFESOR
+  3  WHERE DNI=&dni;
+Enter value for dni: 1111
+old   3: WHERE DNI=&dni
+new   3: WHERE DNI=1111
+
+       DNI P
+---------- ------------------------------------------------------------
+       CAR CAT
+---------- -----
+      1111 JUAN
+	 6 CU
+
+
+SQL> run
+  1  SELECT *
+  2  FROM PROFESOR
+  3* WHERE DNI=&dni
+Enter value for dni: 2222
+old   3: WHERE DNI=&dni
+new   3: WHERE DNI=2222
+
+       DNI P
+---------- ------------------------------------------------------------
+       CAR CAT
+---------- -----
+      2222 CARLOS
+	 7 TU
+
+
+SQL> CREATE TABLE TITULACION
+  2  (T CHAR(4) PRIMARY KEY,
+  3  FAC VARCHAR2(60));
+
+Table created.
+
+SQL> INSERT INTO TITULACION(T)
+  2  SELECT DISTINCT T
+  3  FROM ASIGNATURA;
+
+4 rows created.
+
+SQL> SELECT *
+  2  FROM TITULACION;
+
+T    FAC
+---- ------------------------------------------------------------
+GF
+GM
+GII
+MII
+
+SQL> UPDATE TITULACION
+  2  SET FAC = "FACULTAD DE ASTRONOMIA"
+  3  WHERE T = 'GF';
+SET FAC = "FACULTAD DE ASTRONOMIA"
+          *
+ERROR at line 2:
+ORA-00904: "FACULTAD DE ASTRONOMIA": invalid identifier
+
+
+SQL> UPDATE TITULACION
+  2  SET FAC = 'FACULTAD DE ASTRONOMIA'
+  3  WHERE T = 'GF';
+
+1 row updated.
+
+SQL> UPDATE TITULACION
+  2  SET FAC = 'FACULTAD DE MATEMATICAS'
+  3  WHERE T = 'GM';
+
+1 row updated.
+
+SQL> UPDATE TITULACION
+  2  SET FAC = 'FACULTAD DE INGENIERIA INFORMATICA'
+  3  WHERE T = 'GII';
+
+1 row updated.
+
+SQL> UPDATE TITULACION
+  2  SET FAC = 'FACULTAD DE FISICA Y MATEMATICAS'
+  3  WHERE T = 'MII';
+
+1 row updated.
+
+SQL> SELECT *
+  2  FROM TITULACION;
+
+T    FAC
+---- ------------------------------------------------------------
+GF   FACULTAD DE ASTRONOMIA
+GM   FACULTAD DE MATEMATICAS
+GII  FACULTAD DE INGENIERIA INFORMATICA
+MII  FACULTAD DE FISICA Y MATEMATICAS
+
+SQL> SPOOL OFF
+SQL> exit
+Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
+alu0101037653@280a17b13847:~$ exit
+logout
+Connection to exthost2.etsii.ull.es closed.
+alu0101037653@cc2327:~$ 
