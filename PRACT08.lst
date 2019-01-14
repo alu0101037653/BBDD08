@@ -264,3 +264,234 @@ alu0101037653@280a17b13847:~$ exit
 logout
 Connection to exthost2.etsii.ull.es closed.
 alu0101037653@cc2327:~$ 
+
+
+
+
+
+
+joselinefron@joselinefron:~$ ssh -p alu0101037653@exthost2.etsii.ull.es
+Bad port 'alu0101037653@exthost2.etsii.ull.es'
+joselinefron@joselinefron:~$ ssh alu0101037653@exthost2.etsii.ull.es
+The authenticity of host 'exthost2.etsii.ull.es (10.209.32.241)' can't be established.
+ECDSA key fingerprint is SHA256:d+0guc1W3UeQ7s/2YKyjqeGYNkfdyjTJENoDT4GQ2lY.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'exthost2.etsii.ull.es,10.209.32.241' (ECDSA) to the list of known hosts.
+alu0101037653@exthost2.etsii.ull.es's password: 
+Welcome to Ubuntu 16.04.1 LTS (GNU/Linux 4.4.0-134-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+Pueden actualizarse 380 paquetes.
+1 actualización es de seguridad.
+
+New release '18.04.1 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+*** Es necesario reiniciar el sistema ***
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+Last login: Wed Jan  9 13:12:26 2019 from 10.209.32.80
+alu0101037653@c2:~$ sqlplus2 alumno
+
+SQL*Plus: Release 12.2.0.1.0 Production on Mon Jan 14 17:57:51 2019
+
+Copyright (c) 1982, 2016, Oracle.  All rights reserved.
+
+Enter password: 
+Last Successful login time: Mon Jan 14 2019 17:52:58 +00:00
+
+Connected to:
+Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
+
+SQL> SELECT *
+  2  FROM DEPARTAMENTO;
+
+	CD D
+---------- --------------------
+	 1 prueba
+	 5 ECONOMIA APLICADA
+
+SQL> SELECT *
+  2  FROM PROFESOR;
+FROM PROFESOR
+     *
+ERROR at line 2:
+ORA-00942: table or view does not exist
+
+
+SQL> SELECT *
+  2  FROM alu0101037653.DEPARTAMENTO;
+
+	CD D
+---------- ------------------------------------------------------------
+	 1 ANALISIS MATEMATICO
+	 2 ASTROFISICA
+	 3 ESTADISTICA, INVESTIGACION OPERATIVA Y COMPUTACION
+	 4 MATEMATICA FUNDAMENTAL
+
+SQL> SELECT *
+  2  FROM alu0101037653.PROFESOR;
+FROM alu0101037653.PROFESOR
+                   *
+ERROR at line 2:
+ORA-00942: table or view does not exist
+
+
+SQL> INSERT INTO DEPARTAMENTO
+  2  VALUES (5,'ECONOMIA');
+INSERT INTO DEPARTAMENTO
+*
+ERROR at line 1:
+ORA-00001: unique constraint (ALUMNO.SYS_C0025052) violated
+
+
+SQL> INSERT INTO alu0101037653.DEPARTAMENTO
+  2  VALUES (5,'ECONOMIA');
+
+1 row created.
+
+SQL> UPDATE alu0101037653.DEPARTAMENTO
+  2  SET D='ECONOMIA APLICADA'
+  3  WHERE CD=5;
+
+1 row updated.
+
+SQL> UPDATE alu0101037653.TITULACION
+  2  SET F;
+SET F
+    *
+ERROR at line 2:
+ORA-00927: missing equal sign
+
+
+SQL> SELECT *
+  2  FROM alu0101037653.TITULACION
+  3  ;
+
+T    FAC
+---- ------------------------------------------------------------
+GF   FACULTAD DE ASTRONOMIA
+GM   FACULTAD DE MATEMATICAS
+GII  FACULTAD DE INGENIERIA INFORMATICA
+MII  FACULTAD DE FISICA Y MATEMATICAS
+
+SQL> UPDATE alu0101037653.TITULACION
+  2  SET FAC='ETSII'
+  3  WHERE T='GII';
+
+1 row updated.
+
+SQL> DELETE FROM alu0101037653.TITULACION
+  2  WHERE T='GII';
+DELETE FROM alu0101037653.TITULACION
+                          *
+ERROR at line 1:
+ORA-01031: insufficient privileges
+
+
+SQL> ROLLBACK WORK;
+
+Rollback complete.
+
+SQL> CREATE VIEW VISTA3
+  2  AS SELECT A, CAR
+  3  FROM alu0101037653.ASIGNATURA;
+
+View created.
+
+SQL> SELECT *
+  2  FROM VISTA3;
+
+A							  CAR
+-------------------------------------------------- ----------
+BASES DE DATOS						    7
+INTELIGENCIA ARTIFICIAL 				    4
+ALMACENES DE DATOS					    7
+MINERIA DE DATOS					    7
+INFORMATICA BASICA					    7
+ALGEBRA 						    1
+CALCULO 						    8
+OPTIMIZACION						    6
+GESTION DE RIESGOS					    4
+ASTRONOMIA						    3
+ENSENANZA DE LA MATEMATICA				    5
+
+A							  CAR
+-------------------------------------------------- ----------
+ANALISIS COMPLEJO					    2
+ESTADISTICA						    6
+
+13 rows selected.
+
+SQL> DROP VIEW VISTA3;
+
+View dropped.
+
+SQL> DROP TABLE ASIGNATURA;
+DROP TABLE ASIGNATURA
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+SQL> DROP TABLE alu0101037653.ASIGNATURA;
+DROP TABLE alu0101037653.ASIGNATURA
+                         *
+ERROR at line 1:
+ORA-01031: insufficient privileges
+
+
+SQL> exit
+Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
+alu0101037653@c2:~$ sqlplus
+
+SQL*Plus: Release 12.2.0.1.0 Production on Mon Jan 14 18:19:33 2019
+
+Copyright (c) 1982, 2016, Oracle.  All rights reserved.
+
+Enter password: 
+Last Successful login time: Wed Jan 09 2019 13:12:36 +00:00
+
+Connected to:
+Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
+
+SQL> REVOKE SELECT, UPDATE, INSERT, DELETE
+  2  ON DEPARTAMENTO
+  3  FROM alumno;
+
+Revoke succeeded.
+
+SQL> REVOKE SELECT, UPDATE, INSERT, DELETE
+  2  ON AREA
+  3  FROM alumno;
+
+Revoke succeeded.
+
+SQL> REVOKE SELECT, UPDATE
+  2  ON ASIGNATURA
+  3  FROM alumno;
+
+Revoke succeeded.
+
+SQL> REVOKE SELECT, UPDATE
+  2  ON TITULACION
+  3  FROM alumno;
+
+Revoke succeeded.
+
+SQL> exit
+Disconnected from Oracle Database 12c Enterprise Edition Release 12.2.0.1.0 - 64bit Production
+alu0101037653@c2:~$ exit
+logout
+Connection to exthost2.etsii.ull.es closed.
+joselinefron@joselinefron:~$ 
+
